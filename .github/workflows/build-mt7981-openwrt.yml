@@ -2,7 +2,7 @@ name: MT7981 OpenWrt CI
 on:
   workflow_dispatch:
 env:
-  REPO_URL: https://github.com/immortalwrt/immortalwrt
+  REPO_URL: https://github.com/hanwckf/immortalwrt-mt798x
   REPO_BRANCH: master  
     
 jobs:
@@ -58,4 +58,4 @@ jobs:
       uses: actions/upload-artifact@main
       with:
         name: mt7981-openwrt
-        path: openwrt/bin/targets/mediatek/mt7981/immortalwrt-mediatek-mt7981-cmcc_rax3000m-squashfs-sysupgrade.bin
+        path: openwrt/bin/targets/mediatek/mt7981/*sysupgrade.bin
