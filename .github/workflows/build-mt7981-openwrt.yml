@@ -52,10 +52,10 @@ jobs:
     - name: Build - make openwrt 
       run: |
         cd openwrt
-        make -j$(nproc)
+        make -j$(nproc) V=s
         
     - name: Upload - push to artifact file
       uses: actions/upload-artifact@main
       with:
         name: mt7981-openwrt
-        path: openwrt/bin/targets/mediatek/mt7981/*sysupgrade.bin
+        path: openwrt/bin/targets/mediatek/mt7981/immortalwrt-mediatek-mt7981-cmcc_rax3000m-squashfs-sysupgrade.bin
