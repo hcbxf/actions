@@ -58,4 +58,4 @@ jobs:
       uses: actions/upload-artifact@main
       with:
         name: mt7981-openwrt
-        path: openwrt/bin/targets/mediatek/mt7981/*sysupgrade.bin
+        path: openwrt/bin/targets/mediatek/*/*sysupgrade.bin
