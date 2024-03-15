@@ -52,7 +52,7 @@ jobs:
     - name: Build - make openwrt 
       run: |
         cd openwrt
-        make -j$(nproc) V=s
+        make -j$(nproc)
         
     - name: Upload - push to artifact file
       uses: actions/upload-artifact@main
