@@ -216,14 +216,11 @@ CONFIG_PACKAGE_luci-app-mtwifi-cfg=y
 CONFIG_PACKAGE_luci-app-mwan3=y
 CONFIG_PACKAGE_luci-app-turboacc-mtk=y
 CONFIG_PACKAGE_luci-app-upnp=y
-# CONFIG_PACKAGE_luci-app-usb-printer is not set
 CONFIG_PACKAGE_luci-i18n-eqos-mtk-zh-cn=y
 CONFIG_PACKAGE_luci-i18n-mtwifi-cfg-zh-cn=y
 CONFIG_PACKAGE_luci-i18n-mwan3-zh-cn=y
 CONFIG_PACKAGE_luci-i18n-turboacc-mtk-zh-cn=y
 CONFIG_PACKAGE_luci-i18n-upnp-zh-cn=y
-CONFIG_PACKAGE_luci-theme-argon=y
-CONFIG_PACKAGE_luci-theme-bootstrap-mod=y
 CONFIG_PACKAGE_mii_mgr=y
 CONFIG_PACKAGE_miniupnpd=y
 CONFIG_PACKAGE_mtkhqos_util=y
@@ -264,5 +261,3 @@ CONFIG_first_card_name="MT7981"
 # CONFIG_MTK_PRE_CAL_TRX_SET2_SUPPORT is not set
 # CONFIG_MTK_RLM_CAL_CACHE_SUPPORT is not set
 # CONFIG_MTK_SNIFFER_RADIOTAP_SUPPORT is not set
-CONFIG_PACKAGE_kmod-usb-printer=y
-CONFIG_PACKAGE_p910nd=y
