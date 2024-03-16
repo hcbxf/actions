@@ -1,10 +1,22 @@
 name: MT7981 OpenWrt CI
 on:
   workflow_dispatch:
-env:
-  REPO_URL: https://github.com/hanwckf/immortalwrt-mt798x
-  REPO_BRANCH: master  
-    
+    inputs:
+      REPO_URL:
+        description: "Select Sources Repo "
+        required: false
+        default: "https://github.com/hanwckf/immortalwrt-mt798x"
+        type: choice
+        options:
+          - https://github.com/hanwckf/immortalwrt-mt798x
+      REPO_BRANCH:
+        description: "Select Repo Branch"
+        required: false
+        default: "master"
+        type: choice
+        options:
+          - master 
+          
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -29,7 +41,7 @@ jobs:
 
     - name: Download - openwrt source download
       run: |
-        git clone $REPO_URL openwrt
+        git clone  ${{ inputs.REPO_URL }} openwrt
         
     - name: Update - openwrt source update and install 
       run: |
@@ -37,7 +49,7 @@ jobs:
         ./scripts/feeds update -a
         ./scripts/feeds install -a
         
-    - name: Config - arm docker openwrt build config
+    - name: Config - mt7981 openwrt build config
       run: |
         cp .config.mt7981.openwrt openwrt/.config
         cd openwrt
