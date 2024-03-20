@@ -16,6 +16,11 @@ on:
         type: choice
         options:
           - master 
+      configuration:
+        description: "configuration openwrt"
+        required: false
+        default: false
+        type: boolean
           
 jobs:
   build:
@@ -44,8 +49,8 @@ jobs:
         git clone  ${{ inputs.REPO_URL }} openwrt
         
     - name: Update - openwrt source update and install 
+      working-directory: openwrt
       run: |
-        cd openwrt
         ./scripts/feeds update -a
         ./scripts/feeds install -a
         
@@ -56,17 +61,22 @@ jobs:
         make defconfig
       
     - name: Download - openwrt build dependencies
+      working-directory: openwrt
       run: |
-        cd openwrt
         make download -j$(nproc)
+
+    - name: configurate - configurate openwrt
+      if: ${{ inputs.configuration }} == true
+      run: |
+        bash configurate.sh
         
     - name: Build - make openwrt 
+      working-directory: openwrt
       run: |
-        cd openwrt
         make -j$(nproc)
         
     - name: Upload - push to artifact file
       uses: actions/upload-artifact@main
       with:
         name: mt7981-openwrt
-        path: openwrt/bin/targets/mediatek/*/*sysupgrade.bin
+        path: openwrt/bin/targets/**/*sysupgrade.bin
