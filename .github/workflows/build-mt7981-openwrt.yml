@@ -79,4 +79,8 @@ jobs:
       uses: actions/upload-artifact@main
       with:
         name: mt7981-openwrt
-        path: openwrt/bin/targets/**/*sysupgrade.bin
+        path: |
+           openwrt/bin/targets/**/*sysupgrade.bin
+           openwrt/bin/targets/**/sha256sums
+           openwrt/bin/targets/**/profiles.json
+    
