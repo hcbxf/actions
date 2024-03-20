@@ -16,7 +16,15 @@ on:
         type: choice
         options:
           - master 
-      configuration:
+      Config_File:
+        description: "Select Config File"
+        required: false
+        default: ".config.mt7981.openwrt"
+        type: choice
+        options:
+          - .config.mt7981.openwrt
+          - .config.mt7981.openwrt.luci-app-mtk
+      Configuration:
         description: "configuration openwrt"
         required: false
         default: false
@@ -56,7 +64,7 @@ jobs:
         
     - name: Config - mt7981 openwrt build config
       run: |
-        cp .config.mt7981.openwrt openwrt/.config
+        cp ${{ inputs.Config_File }} openwrt/.config
         cd openwrt
         make defconfig
       
@@ -65,7 +73,7 @@ jobs:
       run: |
         make download -j$(nproc)
 
-    - name: configurate - configurate openwrt
+    - name: Configurate - configurate openwrt
       if: ${{ inputs.configuration }} == true
       run: |
         bash configurate.sh
