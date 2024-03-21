@@ -9,6 +9,7 @@ on:
         type: choice
         options:
           - https://github.com/hanwckf/immortalwrt-mt798x
+          - https://github.com/immortalwrt/immortalwrt
       REPO_BRANCH:
         description: "Select Repo Branch"
         required: false
@@ -24,6 +25,7 @@ on:
         options:
           - .config.mt7981.openwrt
           - .config.mt7981.openwrt.luci-app-mtk
+          - .config.mt7981.immortalwrt
       Configuration:
         description: "configuration openwrt"
         required: false
