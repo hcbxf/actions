@@ -18,7 +18,8 @@ on:
         type: choice
         options:
           - master 
-          - v22.03.6 
+          - v22.03.6
+          - v23.05.3
       Config_File:
         description: "Select Config File"
         required: false
