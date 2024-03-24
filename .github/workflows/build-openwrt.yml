@@ -18,6 +18,12 @@ on:
         type: choice
         options:
           - master 
+      REPO_TAG:
+        description: "Select Repo Tag"
+        required: false
+        type: choice
+        options:
+          - v22.03.6 
       Config_File:
         description: "Select Config File"
         required: false
@@ -28,6 +34,7 @@ on:
           - .config.mt7981.openwrt.luci-app-mtk
           - .config.mt7981.immortalwrt
           - .config.mt7981.openwrt
+          - .config.mt7621.openwrt
       Configuration:
         description: "configuration openwrt"
         required: false
@@ -58,7 +65,7 @@ jobs:
 
     - name: Download - openwrt source download
       run: |
-        git clone  ${{ inputs.REPO_URL }} openwrt
+        [ -n ${{ inputs.REPO_TAG }} ] && git clone  ${{ inputs.REPO_URL }} -b ${{ inputs.REPO_TAG }} openwrt || git clone  ${{ inputs.REPO_URL }} openwrt
         
     - name: Update - openwrt source update and install 
       working-directory: openwrt
