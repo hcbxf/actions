@@ -10,6 +10,7 @@ on:
         options:
           - https://github.com/hanwckf/immortalwrt-mt798x
           - https://github.com/immortalwrt/immortalwrt
+          - https://github.com/openwrt/openwrt/
       REPO_BRANCH:
         description: "Select Repo Branch"
         required: false
@@ -20,12 +21,13 @@ on:
       Config_File:
         description: "Select Config File"
         required: false
-        default: ".config.mt7981.openwrt"
+        default: ".config.mt7981.immortalwrt-mt798x"
         type: choice
         options:
-          - .config.mt7981.openwrt
+          - .config.mt7981.immortalwrt-mt798x
           - .config.mt7981.openwrt.luci-app-mtk
           - .config.mt7981.immortalwrt
+          - .config.mt7981.openwrt
       Configuration:
         description: "configuration openwrt"
         required: false
@@ -90,7 +92,7 @@ jobs:
       with:
         name: mt7981-openwrt
         path: |
-           openwrt/bin/targets/**/*sysupgrade.bin
+           openwrt/bin/targets/**/*sysupgrade.*
            openwrt/bin/targets/**/sha256sums
            openwrt/bin/targets/**/profiles.json
     
