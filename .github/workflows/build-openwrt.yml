@@ -18,11 +18,6 @@ on:
         type: choice
         options:
           - master 
-      REPO_TAG:
-        description: "Select Repo Tag"
-        required: false
-        type: choice
-        options:
           - v22.03.6 
       Config_File:
         description: "Select Config File"
@@ -65,7 +60,7 @@ jobs:
 
     - name: Download - openwrt source download
       run: |
-        [ -n ${{ inputs.REPO_TAG }} ] && git clone  ${{ inputs.REPO_URL }} -b ${{ inputs.REPO_TAG }} openwrt || git clone  ${{ inputs.REPO_URL }} openwrt
+        git clone  ${{ inputs.REPO_URL }} -b ${{ inputs.REPO_BRANCH }} openwrt 
         
     - name: Update - openwrt source update and install 
       working-directory: openwrt
