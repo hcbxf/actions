@@ -1,4 +1,4 @@
-name: MT7981 OpenWrt CI
+name: Build OpenWrt CI
 on:
   workflow_dispatch:
     inputs:
