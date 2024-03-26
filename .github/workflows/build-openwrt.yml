@@ -18,6 +18,7 @@ on:
         type: choice
         options:
           - master 
+          - v22.03.5
           - v22.03.6
           - v23.05.3
       Config_File:
@@ -90,6 +91,11 @@ jobs:
       run: |
         make -j$(nproc)
         
+    - name: Annotations - show annotations
+      run: |
+        echo "::debug:: Repo:${{ inputs.REPO_URL }}\nBranch:{{ inputs.REPO_BRANCH }}\nconfig:${{ inputs.Config_File }}"
+   
+    
     - name: Upload - push to artifact file
       uses: actions/upload-artifact@main
       with:
