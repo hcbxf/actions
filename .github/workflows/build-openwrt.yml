@@ -21,6 +21,7 @@ on:
           - v22.03.5
           - v22.03.6
           - v23.05.3
+          - openwrt-21.02
       Config_File:
         description: "Select Config File"
         required: false
