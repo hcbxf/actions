@@ -63,7 +63,11 @@ jobs:
 
     - name: Download - openwrt source download
       run: |
-        git clone  ${{ inputs.REPO_URL }} -b ${{ inputs.REPO_BRANCH }} openwrt 
+        if [ "${{ inputs.REPO_URL }}" = "https://github.com/hanwckf/immortalwrt-mt798x" ]; then
+            git clone  ${{ inputs.REPO_URL }}  openwrt 
+        else
+            git clone  ${{ inputs.REPO_URL }} -b ${{ inputs.REPO_BRANCH }} openwrt 
+        fi
         
     - name: Update - openwrt source update and install 
       working-directory: openwrt
@@ -94,10 +98,7 @@ jobs:
         
     - name: Annotations - show annotations
       run: |
-        echo "::notice::Repo: ${{ inputs.REPO_URL }}"
-        echo "::notice::Branch: ${{ inputs.REPO_BRANCH }}"
-        echo "::notice::config: ${{ inputs.Config_File }}"
-   
+        echo "::notice::Repo: ${{ inputs.REPO_URL }} \n Branch: ${{ inputs.REPO_BRANCH }} \n config: ${{ inputs.Config_File }}"
     
     - name: Upload - push to artifact file
       uses: actions/upload-artifact@main
