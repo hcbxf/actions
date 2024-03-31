@@ -98,7 +98,7 @@ jobs:
         
     - name: Annotations - show annotations
       run: |
-        echo "::notice::Repo: ${{ inputs.REPO_URL }} \n Branch: ${{ inputs.REPO_BRANCH }} \n config: ${{ inputs.Config_File }}"
+        echo "::notice::Repo: ${{ inputs.REPO_URL }}  Branch: ${{ inputs.REPO_BRANCH }}  config: ${{ inputs.Config_File }}"
     
     - name: Upload - push to artifact file
       uses: actions/upload-artifact@main
