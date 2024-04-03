@@ -33,6 +33,7 @@ on:
           - .config.mt7981.immortalwrt
           - .config.mt7981.openwrt
           - .config.mt7621.openwrt
+          - .config.mt7981.immortalwrt-mt798x.nowifi
       Configuration:
         description: "configuration openwrt"
         required: false
@@ -75,7 +76,7 @@ jobs:
         ./scripts/feeds update -a
         ./scripts/feeds install -a
         
-    - name: Config - mt7981 openwrt build config
+    - name: Config - openwrt build config
       run: |
         cp ${{ inputs.Config_File }} openwrt/.config
         cd openwrt
