@@ -34,6 +34,7 @@ on:
           - .config.mt7981.openwrt
           - .config.mt7621.openwrt
           - .config.mt7981.immortalwrt-mt798x.nowifi
+          - .config.mt7981.immortalwrt-mt798x.printer
       Configuration:
         description: "configuration openwrt"
         required: false
