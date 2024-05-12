@@ -43,6 +43,11 @@ on:
         required: false
         default: false
         type: boolean
+      Apply_Patch:
+        description: "apply patch"
+        required: false
+        default: false
+        type: boolean
           
 jobs:
   build:
@@ -95,6 +100,13 @@ jobs:
       if: ${{ inputs.configuration }} == true
       run: |
         bash configurate.sh
+
+    - name: Patch - apply patch
+      working-directory: openwrt
+      if: ${{ inputs.Apply_Patch }} == true
+      run: |
+        wget https://github.com/KK2018gh/ipq6000sdf/commit/3cd8e324228b135b8892856ca60533ce2bca71b0.patch
+        git apply 3cd8e324228b135b8892856ca60533ce2bca71b0.patch
         
     - name: Build - make openwrt 
       working-directory: openwrt
