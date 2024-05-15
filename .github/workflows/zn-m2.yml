@@ -1,0 +1,117 @@
+name: Build ZN-M2 OpenWrt CI
+on:
+  workflow_dispatch:
+    inputs:
+      REPO_URL:
+        description: "Select Sources Repo "
+        required: false
+        default: "https://github.com/sdf8057/ipq6000"
+        type: choice
+        options:
+          - https://github.com/sdf8057/ipq6000
+      REPO_BRANCH:
+        description: "Select Repo Branch"
+        required: false
+        default: "master"
+        type: choice
+        options:
+          - master 
+      Config_File:
+        description: "Select Config File"
+        required: false
+        default: ".config.ipq6000.openwrt"
+        type: choice
+        options:
+          - .config.ipq6000.openwrt
+          - .config.znm2.default.openwrt
+      Configuration:
+        description: "configuration openwrt"
+        required: false
+        default: false
+        type: boolean
+      Apply_Patch:
+        description: "apply patch"
+        required: false
+        default: false
+        type: boolean
+          
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout - clone repository
+      uses: actions/checkout@main
+
+    - name: Install - system build dependencies
+      run: |
+        sudo rm -rf /swapfile /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc || echo "clean partly"
+        sudo -E apt-get -qq update
+        sudo -E apt-get -yqq install ack antlr3 asciidoc autoconf automake autopoint binutils bison build-essential \
+              bzip2 ccache clang clangd cmake cpio curl device-tree-compiler ecj fastjar flex gawk gettext gcc-multilib \
+              g++-multilib git gperf haveged help2man intltool lib32gcc-s1 libc6-dev-i386 libelf-dev libglib2.0-dev \
+              libgmp3-dev libltdl-dev libmpc-dev libmpfr-dev libncurses5-dev libncursesw5 libncursesw5-dev libreadline-dev \
+              libssl-dev libtool lld lldb lrzsz mkisofs msmtp nano ninja-build p7zip p7zip-full patch pkgconf python2.7 \
+              python3 python3-pip python3-ply qemu-utils re2c rsync scons squashfs-tools subversion swig \
+              texinfo uglifyjs upx-ucl unzip vim wget xmlto xxd zlib1g-dev
+        sudo -E apt-get -yqq autoremove --purge
+        sudo -E apt-get -qq clean
+
+    - name: Download - openwrt source download
+      run: |
+          git clone  ${{ inputs.REPO_URL }} -b ${{ inputs.REPO_BRANCH }} openwrt 
+        
+    - name: Update - openwrt source update and install 
+      working-directory: openwrt
+      run: |
+        ./scripts/feeds update -a
+        ./scripts/feeds install -a
+        
+    - name: Config - openwrt build config
+      run: |
+        cp .config.znm2.default.openwrt openwrt/.config
+        cd openwrt
+        make defconfig
+      
+    - name: Download - openwrt build dependencies
+      working-directory: openwrt
+      run: |
+        make download -j$(nproc)
+
+    - name: Configurate - configurate openwrt
+      if: ${{ inputs.configuration }} == true
+      run: |
+        bash configurate.sh
+
+    - name: Patch - apply patch
+      working-directory: openwrt
+      if: ${{ inputs.Apply_Patch }} == true
+      run: |
+        wget https://github.com/KK2018gh/ipq6000sdf/commit/3cd8e324228b135b8892856ca60533ce2bca71b0.patch
+        git apply 3cd8e324228b135b8892856ca60533ce2bca71b0.patch
+        
+    - name: Build - make openwrt 
+      working-directory: openwrt
+      run: |
+        make -j$(nproc)
+
+    - name: ReBuild - rebuild openwrt 
+      run: |
+        rm openwrt/.config
+        cp ${{ inputs.Config_File }} openwrt/.config
+        cd openwrt
+        make defconfig
+        make -j$(nproc)
+        
+    - name: Annotations - show annotations
+      run: |
+        echo "::notice::Repo: ${{ inputs.REPO_URL }}  Branch: ${{ inputs.REPO_BRANCH }}  config: ${{ inputs.Config_File }}"
+    
+    - name: Upload - push to artifact file
+      uses: actions/upload-artifact@main
+      with:
+        name: openwrt
+        path: |
+           openwrt/bin/targets/**/*sysupgrade.*
+           openwrt/bin/targets/**/sha256sums
+           openwrt/bin/targets/**/profiles.json
