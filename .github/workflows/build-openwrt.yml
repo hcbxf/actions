@@ -11,7 +11,7 @@ on:
           - https://github.com/hanwckf/immortalwrt-mt798x
           - https://github.com/immortalwrt/immortalwrt
           - https://github.com/openwrt/openwrt/
-          - https://github.com/sdf8057/ipq6000
+          - https://github.com/breeze303/openwrt-6.x
       REPO_BRANCH:
         description: "Select Repo Branch"
         required: false
@@ -37,14 +37,9 @@ on:
           - .config.mt7621.openwrt
           - .config.mt7981.immortalwrt-mt798x.nowifi
           - .config.mt7981.immortalwrt-mt798x.printer
-          - .config.ipq6000.openwrt
+          - .config.ipq6000.6.x.openwrt.nowifi
       Configuration:
         description: "configuration openwrt"
-        required: false
-        default: false
-        type: boolean
-      Apply_Patch:
-        description: "apply patch"
         required: false
         default: false
         type: boolean
@@ -100,13 +95,6 @@ jobs:
       if: ${{ inputs.configuration }} == true
       run: |
         bash configurate.sh
-
-    - name: Patch - apply patch
-      working-directory: openwrt
-      if: ${{ inputs.Apply_Patch }} == true
-      run: |
-        wget https://github.com/KK2018gh/ipq6000sdf/commit/3cd8e324228b135b8892856ca60533ce2bca71b0.patch
-        git apply 3cd8e324228b135b8892856ca60533ce2bca71b0.patch
         
     - name: Build - make openwrt 
       working-directory: openwrt
