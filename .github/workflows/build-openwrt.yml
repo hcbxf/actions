@@ -1,3 +1,4 @@
+
 name: Build OpenWrt CI
 on:
   workflow_dispatch:
@@ -18,7 +19,8 @@ on:
         default: "master"
         type: choice
         options:
-          - master 
+          - master
+          - main
           - v22.03.5
           - v22.03.6
           - v23.05.3
