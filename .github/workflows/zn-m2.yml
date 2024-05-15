@@ -93,7 +93,7 @@ jobs:
     - name: Build - make openwrt 
       working-directory: openwrt
       run: |
-        make -j$(nproc)
+        make -j$(nproc) | make V=s -j1
 
     - name: ReBuild - rebuild openwrt 
       run: |
