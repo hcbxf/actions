@@ -93,7 +93,7 @@ jobs:
     - name: Build - make openwrt 
       working-directory: openwrt
       run: |
-        make -j$(nproc) || make package/feeds/luci/luci-base/compile V=s || make V=s -j1
+        make -j$(nproc) || ( make package/feeds/luci/luci-base/compile V=s && make V=s -j1 )
 
     - name: ReBuild - rebuild openwrt 
       run: |
