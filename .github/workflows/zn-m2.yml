@@ -93,8 +93,8 @@ jobs:
     - name: Build - make openwrt 
       working-directory: openwrt
       run: |
-        make -j$(nproc) ||  make package/feeds/luci/luci-base/compile || make V=s -j1 
-        #make -j$(nproc) || ( make package/feeds/luci/luci-base/compile && make V=s -j1 )
+        #make -j$(nproc) ||  make package/feeds/luci/luci-base/compile || make V=s -j1 
+        make -j$(nproc) || ( make package/feeds/luci/luci-base/compile && make V=s -j1 )
 
     - name: ReBuild - rebuild openwrt 
       run: |
@@ -102,7 +102,7 @@ jobs:
         cp ${{ inputs.Config_File }} openwrt/.config
         cd openwrt
         make defconfig
-        make -j$(nproc)
+        make -j$(nproc) || make V=s -j1
         
     - name: Annotations - show annotations
       run: |
