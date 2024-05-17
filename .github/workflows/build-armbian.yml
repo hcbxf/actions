@@ -13,6 +13,7 @@ on:
         options:
           - main
           - v24.2.1
+          - v23.11.2
     
 jobs:
   build:
