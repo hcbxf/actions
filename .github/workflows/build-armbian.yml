@@ -1,4 +1,4 @@
-name: armbian build CI
+name: build armbian CI
 
 env:
   REPO_URL: https://github.com/armbian/build 
@@ -24,7 +24,7 @@ jobs:
 
     - name: Download - openwrt source download
       run: |
-        git clone --depth=1 --branch=$REPO_BRANCH $REPO_URL
+        git clone --depth=1 --branch=${{ inputs.REPO_BRANCH }}  $REPO_URL
   
     - name: Build - build armbian
       run: |
