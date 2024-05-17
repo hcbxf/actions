@@ -30,21 +30,19 @@ jobs:
     - name: Build - build armbian
       run: |
         cd build
-        ./compile.sh PREFER_DOCKER=no BOARD=aml-s9xx-box BRANCH=current BUILD_DESKTOP=no BUILD_MINIMAL=yes KERNEL_CONFIGURE=no RELEASE=bookworm
+        sudo ./compile.sh PREFER_DOCKER=no BOARD=aml-s9xx-box BRANCH=current BUILD_DESKTOP=no BUILD_MINIMAL=yes KERNEL_CONFIGURE=no RELEASE=bookworm
 
     - name: Compress - compress image
       working-directory: build/output/images
       run: |
-        sudo xz -T 0 -k *.img
+        sudo xz -T 0 *.img
         
     - name: Upload - push to artifact file
       uses: actions/upload-artifact@main
       with:
         name: armbian
         path: |
-           build/output/images/*.xz
-           build/output/images/*.sha
-           build/output/images/*.txt
+           build/output/images/*
 
 
 
