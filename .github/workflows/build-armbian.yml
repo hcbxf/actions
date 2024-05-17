@@ -28,9 +28,9 @@ jobs:
         git clone --depth=1 --branch=${{ inputs.REPO_BRANCH }}  $REPO_URL
   
     - name: Build - build armbian
+      working-directory: build
       run: |
-        cd build
-        sudo ./compile.sh PREFER_DOCKER=no BOARD=aml-s9xx-box BRANCH=current BUILD_DESKTOP=no BUILD_MINIMAL=yes KERNEL_CONFIGURE=no RELEASE=bookworm
+        ./compile.sh PREFER_DOCKER=no BOARD=aml-s9xx-box BRANCH=current BUILD_DESKTOP=no BUILD_MINIMAL=yes KERNEL_CONFIGURE=no RELEASE=bookworm
 
     - name: Compress - compress image
       working-directory: build/output/images
