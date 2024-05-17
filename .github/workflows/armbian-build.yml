@@ -1,0 +1,29 @@
+name: armbian build with docker CI
+on:
+  workflow_dispatch:
+env:
+  REPO_URL: https://github.com/armbian/build
+  REPO_BRANCH: main 
+    
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout - clone repository
+      uses: actions/checkout@main
+
+    - name: Install - system build dependencies
+      run: |
+        sudo rm -rf /swapfile /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc || echo "clean partly"
+        sudo -E apt-get -yqq autoremove --purge
+        sudo -E apt-get -qq clean
+
+    - name: Download - openwrt source download
+      run: |
+        git clone --depth=1 --branch=main $REPO_URL
+  
+    - name: Build - build armbian
+      run: |
+        cd build
+        ./compile.sh docker BOARD=aml-s9xx-box BRANCH=current BUILD_DESKTOP=no BUILD_MINIMAL=yes KERNEL_CONFIGURE=no RELEASE=bookworm
