@@ -35,14 +35,16 @@ jobs:
     - name: Compress - compress image
       working-directory: build/output/images
       run: |
-        xz -T 0 *.img
+        xz -T 0 -k *.img
         
     - name: Upload - push to artifact file
       uses: actions/upload-artifact@main
       with:
         name: armbian
         path: |
-           build/output/images/*
+           build/output/images/*.xz
+           build/output/images/*.sha
+           build/output/images/*.txt
 
 
 
