@@ -35,7 +35,7 @@ jobs:
     - name: Compress - compress image
       working-directory: build/output/images
       run: |
-        xz -T 0 -k *.img
+        sudo xz -T 0 -k *.img
         
     - name: Upload - push to artifact file
       uses: actions/upload-artifact@main
