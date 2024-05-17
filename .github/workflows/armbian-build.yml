@@ -26,4 +26,4 @@ jobs:
     - name: Build - build armbian
       run: |
         cd build
-        ./compile.sh docker BOARD=aml-s9xx-box BRANCH=current BUILD_DESKTOP=no BUILD_MINIMAL=yes KERNEL_CONFIGURE=no RELEASE=bookworm
+        ./compile.sh PREFER_DOCKER=no BOARD=aml-s9xx-box BRANCH=current BUILD_DESKTOP=no BUILD_MINIMAL=yes KERNEL_CONFIGURE=no RELEASE=bookworm
