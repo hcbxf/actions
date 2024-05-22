@@ -40,6 +40,7 @@ on:
           - .config.mt7981.immortalwrt-mt798x.nowifi
           - .config.mt7981.immortalwrt-mt798x.printer
           - .config.ipq6000.6.x.openwrt.nowifi
+          - .config.mt7981.mesh.immortalwrt
       Configuration:
         description: "configuration openwrt"
         required: false
