@@ -22,7 +22,7 @@ on:
         default: ".config.ipq6000.openwrt"
         type: choice
         options:
-          - .config.ipq6000.openwrt
+          - .config.ipq6000.sdf8057.openwrt
           - .config.znm2.default.openwrt
       Configuration:
         description: "configuration openwrt"
