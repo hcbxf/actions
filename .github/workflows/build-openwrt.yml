@@ -118,6 +118,7 @@ jobs:
         path: |
            openwrt/bin/targets/**/*.bin
            openwrt/bin/targets/**/*sysupgrade.*
+           openwrt/bin/targets/**/*factory*
            openwrt/bin/targets/**/sha256sums
            openwrt/bin/targets/**/profiles.json
     
