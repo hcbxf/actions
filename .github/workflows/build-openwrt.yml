@@ -13,6 +13,7 @@ on:
           - https://github.com/immortalwrt/immortalwrt
           - https://github.com/openwrt/openwrt/
           - https://github.com/breeze303/openwrt-6.x
+          - https://github.com/King-Of-Knights/openwrt-6.x
       REPO_BRANCH:
         description: "Select Repo Branch"
         required: false
