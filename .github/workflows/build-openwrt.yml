@@ -106,6 +106,7 @@ jobs:
     - name: Build - make openwrt 
       working-directory: openwrt
       run: |
+        make defconfig
         make -j$(nproc)
         
     - name: Annotations - show annotations
