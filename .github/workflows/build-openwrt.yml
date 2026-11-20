@@ -85,6 +85,16 @@ jobs:
     - name: Update - openwrt source update and install 
       working-directory: openwrt
       run: |
+        # ac-agent is not in the official feeds, pull it from its own feed root.
+        if grep -q '^CONFIG_PACKAGE_ac-agent=y' "../${{ inputs.Config_File }}"; then
+          git clone --depth 1 https://github.com/naoki66/OpenWrt_AC-Controller.git /tmp/openwrt-ac-controller
+          echo "src-link ac_agent /tmp/openwrt-ac-controller/agent/openwrt" >> feeds.conf.default
+          # OpenWrt 23.05 ships Go 1.21, but ac-agent's go.mod requires Go 1.26.
+          # Re-enable Go toolchain switching for this package so the build
+          # downloads the required toolchain instead of aborting on go.mod.
+          sed -i '/golang-package\.mk[[:space:]]*$/a GO_PKG_BUILD_VARS += GOTOOLCHAIN=auto' \
+            /tmp/openwrt-ac-controller/agent/openwrt/ac-agent/Makefile
+        fi
         ./scripts/feeds update -a
         ./scripts/feeds install -a
         
