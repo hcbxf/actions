@@ -51,6 +51,11 @@ on:
         required: false
         default: false
         type: boolean
+      AC_CONTROLLER_PUBKEY:
+        description: "AC-AGENT 公钥（可留空）"
+        required: false
+        default: ""
+        type: string
           
 jobs:
   build:
@@ -85,18 +90,56 @@ jobs:
     - name: Update - openwrt source update and install 
       working-directory: openwrt
       run: |
-        # ac-agent is not in the official feeds, pull it from its own feed root.
-        if grep -q '^CONFIG_PACKAGE_ac-agent=y' "../${{ inputs.Config_File }}"; then
-          git clone --depth 1 https://github.com/naoki66/OpenWrt_AC-Controller.git /tmp/openwrt-ac-controller
-          echo "src-link ac_agent /tmp/openwrt-ac-controller/agent/openwrt" >> feeds.conf.default
-          # OpenWrt 23.05 ships Go 1.21, but ac-agent's go.mod requires Go 1.26.
-          # Re-enable Go toolchain switching for this package so the build
-          # downloads the required toolchain instead of aborting on go.mod.
-          sed -i '/golang-package\.mk[[:space:]]*$/a GO_PKG_BUILD_VARS += GOTOOLCHAIN=auto' \
-            /tmp/openwrt-ac-controller/agent/openwrt/ac-agent/Makefile
-        fi
         ./scripts/feeds update -a
+
+        # ac-agent's go.mod declares "go 1.26", so it needs a Go >= 1.21 to
+        # either compile it or fetch that toolchain via GOTOOLCHAIN=auto.
+        # Releases up to 22.03 ship Go 1.19, which cannot even parse the
+        # three-part go directive, so for those swap in a prebuilt official
+        # Go 1.26 host toolchain (see .github/openwrt/golang-prebuilt).
+        GO_VERSION_MM="$(sed -n 's/^GO_VERSION_MAJOR_MINOR:=//p' \
+          feeds/packages/lang/golang/golang/Makefile 2>/dev/null | head -n1 | tr -d '[:space:]')"
+        AC_AGENT_CFG=0
+        if grep -q '^CONFIG_PACKAGE_ac-agent=y' "../${{ inputs.Config_File }}"; then
+          AC_AGENT_CFG=1
+        fi
+        GO_MODERN=0
+        if [ -n "$GO_VERSION_MM" ] \
+          && [ "$(printf '%s\n%s\n' 1.21 "$GO_VERSION_MM" | sort -V | head -n1)" = "1.21" ]; then
+          GO_MODERN=1
+        fi
+
+        if [ "$AC_AGENT_CFG" = 1 ]; then
+          # ac-agent is not in the official feeds, pull it from its own feed root.
+          git clone --depth 1 https://github.com/naoki66/OpenWrt_AC-Controller.git /tmp/openwrt-ac-controller
+          # Follow LuCI's language and use Chinese for missing translations.
+          python3 ../.github/openwrt/ac-agent/luci-language.py \
+            /tmp/openwrt-ac-controller/agent/openwrt/luci-app-ac-agent
+          echo "src-link ac_agent /tmp/openwrt-ac-controller/agent/openwrt" >> feeds.conf.default
+          if [ "$GO_MODERN" = 1 ]; then
+            # Re-enable Go toolchain switching for this package so the build
+            # downloads the required toolchain instead of aborting on go.mod.
+            sed -i '/golang-package\.mk[[:space:]]*$/a GO_PKG_BUILD_VARS += GOTOOLCHAIN=auto' \
+              /tmp/openwrt-ac-controller/agent/openwrt/ac-agent/Makefile
+          fi
+          # ac-agent is pure Go; avoid CGO assembler failures on MIPS.
+          cp ../.github/openwrt/ac-agent/mips-compat.mk \
+            /tmp/openwrt-ac-controller/agent/openwrt/ac-agent/mips-compat.mk
+          sed -i '/golang-package\.mk[[:space:]]*$/a include $(CURDIR)/mips-compat.mk' \
+            /tmp/openwrt-ac-controller/agent/openwrt/ac-agent/Makefile
+          ./scripts/feeds update ac_agent
+        fi
+
         ./scripts/feeds install -a
+
+        if [ "$AC_AGENT_CFG" = 1 ] && [ "$GO_MODERN" = 0 ]; then
+          # Replace the feed's Go 1.19 with the official prebuilt Go 1.26 so
+          # ac-agent's PKG_BUILD_DEPENDS:=golang/host gets a usable toolchain.
+          rm -rf package/feeds/packages/golang
+          mkdir -p package/golang
+          cp ../.github/openwrt/golang-prebuilt/Makefile package/golang/Makefile
+          echo "::notice::branch ${{ inputs.REPO_BRANCH }} ships Go ${GO_VERSION_MM:-unknown}; using the prebuilt Go 1.26 host toolchain for ac-agent."
+        fi
         
     - name: Config - openwrt build config
       run: |
@@ -110,15 +153,18 @@ jobs:
         make download -j$(nproc)
 
     - name: Configurate - configurate openwrt
-      if: ${{ inputs.configuration }} == true
+      if: ${{ inputs.Configuration }}
       run: |
         bash configurate.sh
         
     - name: Build - make openwrt 
       working-directory: openwrt
+      env:
+        AC_CONTROLLER_PUBKEY: ${{ inputs.AC_CONTROLLER_PUBKEY }}
       run: |
         make defconfig
-        make -j$(nproc)
+        make -j$(nproc) AC_CONTROLLER_PUBKEY="$AC_CONTROLLER_PUBKEY" \
+          || make -j1 V=s AC_CONTROLLER_PUBKEY="$AC_CONTROLLER_PUBKEY"
         
     - name: Annotations - show annotations
       run: |
