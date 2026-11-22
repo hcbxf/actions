@@ -79,13 +79,13 @@ jobs:
         make download -j$(nproc)
 
     - name: Configurate - configurate openwrt
-      if: ${{ inputs.Configuration }}
+      if: ${{ inputs.configuration }} == true
       run: |
         bash configurate.sh
 
     - name: Patch - apply patch
       working-directory: openwrt
-      if: ${{ inputs.Apply_Patch }}
+      if: ${{ inputs.Apply_Patch }} == true
       run: |
         wget https://github.com/KK2018gh/ipq6000sdf/commit/3cd8e324228b135b8892856ca60533ce2bca71b0.patch
         git apply 3cd8e324228b135b8892856ca60533ce2bca71b0.patch
